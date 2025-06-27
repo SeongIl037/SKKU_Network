@@ -2699,6 +2699,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   NicknameText: {fileID: 4984769145132643226}
+  Person: {fileID: 7927362343140519702}
 --- !u!114 &7035140575082362474
 MonoBehaviour:
   m_ObjectHideFlags: 0
