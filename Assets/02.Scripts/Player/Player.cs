@@ -5,7 +5,9 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     public PlayerStat Stat;
-    public Dictionary<Type, PlayerAbility> _abilitiesCache;
+    public Dictionary<Type, PlayerAbility> _abilitiesCache = new Dictionary<Type, PlayerAbility>();
+    
+    public event Action StaminaChanged;
     
     public T GetAbility<T>() where T : PlayerAbility
     {
@@ -26,5 +28,59 @@ public class Player : MonoBehaviour
         }
         
         throw new Exception($"어빌리티{type.Name}을 {gameObject.name}에서 찾을 수 없습니다.");
+    }
+
+    private void Update()
+    {
+        if (Stat.Stamina >= Stat.MaxStamina)
+        {
+            return;
+        }
+        
+        if (GetAbility<PlayerAttackAbility>().IsAttacking && GetAbility<PlayerController>().CanRecovery() == false)
+        {
+            return;
+        }
+        
+        RecoveryStamina(Stat.StaminRecovery);
+    }
+
+    public bool ImmediateReduceStamina(float value)
+    {
+        if (CanMove(value) == false)
+        {
+            return false;
+        }
+        
+        Stat.Stamina -= value;
+        StaminaChanged?.Invoke();
+        return true;
+    }
+    
+    public bool SlowReduceStamina(float value)
+    {
+        if (CanMove(value) == false)
+        {
+            return false;
+        }
+        Stat.Stamina -= 1/ value * Time.deltaTime;
+        StaminaChanged?.Invoke();
+        return true;
+    }
+    
+    public bool RecoveryStamina(float value)
+    {
+        if (CanMove(value) == false)
+        {
+            return false;
+        }
+        Stat.Stamina += 1 / value * Time.deltaTime;
+        StaminaChanged?.Invoke();
+        return true;
+    }
+
+    private bool CanMove(float value)
+    {
+       return Stat.Stamina >= value;
     }
 }

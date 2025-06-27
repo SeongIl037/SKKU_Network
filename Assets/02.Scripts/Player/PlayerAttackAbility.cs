@@ -1,10 +1,11 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class PlayerAttackAbility : PlayerAbility
 {
     private PlayerController _player;
     public float Timer;
-    private bool _isAttacking;
+    public bool IsAttacking;
     private Animator _animator;
 
     protected override void Awake()
@@ -16,6 +17,11 @@ public class PlayerAttackAbility : PlayerAbility
 
     private void Update()
     {
+        if (!_photonView.IsMine)
+        {
+            return;
+        }
+        
         Attack();
         
     }
@@ -24,22 +30,23 @@ public class PlayerAttackAbility : PlayerAbility
     {
         AttackCooltimer();
        
-        if (_isAttacking)
+        if (IsAttacking)
         {
             return;
         }   
        
-        if (Input.GetMouseButtonDown(0) && _player.PlayerControl.isGrounded)
+        if (Input.GetMouseButtonDown(0) && _player.PlayerControl.isGrounded &&
+            _owner.ImmediateReduceStamina(_owner.Stat.AttackStamina))
         {
             float index = UnityEngine.Random.Range(1, 4);
             _animator.SetTrigger($"Attack{index}");
-            _isAttacking = true;    
+            IsAttacking = true;
         }
     }
 
     private void AttackCooltimer()
     {
-        if (!_isAttacking)
+        if (!IsAttacking)
         {
             return;
         }
@@ -47,7 +54,7 @@ public class PlayerAttackAbility : PlayerAbility
 
         if (Timer >= (1f/ _owner.Stat.AttackSpeed))
         {
-            _isAttacking = false;
+            IsAttacking = false;
             Timer = 0;
         }
     }

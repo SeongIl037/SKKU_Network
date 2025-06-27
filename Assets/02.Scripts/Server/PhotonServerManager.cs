@@ -15,6 +15,12 @@ public class PhotonServerManager : MonoBehaviourPunCallbacks // 포톤의 pun기
     // MonoBehaviourPunCallbacks : 유니티 이벤트 말고도 pun 섭저 이벤트를 받을 수 있다.
     private void Start()
     {
+        // 설정
+        // 0. 데이터 송수신 빈도를 매 초당 30회로 설정한다. (기본 10)
+        PhotonNetwork.SendRate = 60;         // 데이터를 초당 몇번 보낼거냐?
+        PhotonNetwork.SerializationRate = 60;// 데이터 직렬화를 초당 몇번 할 것이냐.
+        // 60으로 설정했다고 60프레임이 보장되지 않음
+        
         // 필요
         // 1. 버전  = 버전이 다르면 다른 서버로 접속이 된다. 
         PhotonNetwork.GameVersion = _gameVersion;
