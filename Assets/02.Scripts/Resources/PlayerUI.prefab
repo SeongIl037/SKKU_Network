@@ -365,7 +365,6 @@ GameObject:
   - component: {fileID: 7708662698078976379}
   - component: {fileID: 4758503578794837552}
   - component: {fileID: 3127682860098301963}
-  - component: {fileID: 8680047017415912894}
   m_Layer: 5
   m_Name: StatPivot
   m_TagString: Untagged
@@ -458,20 +457,6 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!114 &8680047017415912894
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3195869759394049587}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 116f319739db48945b26a3bc05b3e035, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  StaminaSlider: {fileID: 7079245460324464212}
-  MyPlayer: {fileID: 0}
 --- !u!1 &3303820069075655513
 GameObject:
   m_ObjectHideFlags: 0
@@ -484,9 +469,10 @@ GameObject:
   - component: {fileID: 1750237575895880398}
   - component: {fileID: 7032650982031606966}
   - component: {fileID: 8500360322381701695}
+  - component: {fileID: 7338600354553878672}
   m_Layer: 5
   m_Name: PlayerUI
-  m_TagString: Untagged
+  m_TagString: StatUI
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -575,6 +561,20 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &7338600354553878672
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3303820069075655513}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 116f319739db48945b26a3bc05b3e035, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StaminaSlider: {fileID: 7079245460324464212}
+  MyPlayer: {fileID: 0}
 --- !u!1 &3393440758948631885
 GameObject:
   m_ObjectHideFlags: 0

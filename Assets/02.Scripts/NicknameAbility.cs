@@ -4,7 +4,7 @@ using TMPro;
 public class NicknameAbility : PlayerAbility
 {
     public TextMeshProUGUI NicknameText;
-
+    public Sprite Person;
     private void Start()
     {
         NicknameText.text = $"{_photonView.Owner.NickName}_{_photonView.Owner.ActorNumber}";
@@ -12,6 +12,7 @@ public class NicknameAbility : PlayerAbility
         if (_photonView.IsMine)
         {
             NicknameText.color = Color.green;
+            
         }
         else
         {

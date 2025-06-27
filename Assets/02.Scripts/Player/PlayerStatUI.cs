@@ -5,21 +5,15 @@ using UnityEngine.UI;
 
 public class PlayerStatUI : MonoBehaviour
 {
-    private PhotonView _view;
     public Slider StaminaSlider;
     public Player MyPlayer;
-    private void Start()
+    
+    public void Init(Player player)
     {
-        
-        _view = GetComponentInParent<PhotonView>();
-        MyPlayer = GetComponentInParent<Player>();
-
-        if(_view.IsMine)
-        {
-            StaminaSlider.maxValue = MyPlayer.Stat.MaxStamina;
-            StaminaSlider.value = MyPlayer.Stat.Stamina;
-            MyPlayer.StaminaChanged += Refresh;
-        }
+        MyPlayer = player;
+        StaminaSlider.maxValue = MyPlayer.Stat.MaxStamina;
+        StaminaSlider.value = MyPlayer.Stat.Stamina;
+        MyPlayer.StaminaChanged += Refresh;
     }
 
     private void Refresh()

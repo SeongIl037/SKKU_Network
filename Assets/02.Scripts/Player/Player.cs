@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    private PhotonView _view;
     public PlayerStat Stat;
     public Dictionary<Type, PlayerAbility> _abilitiesCache = new Dictionary<Type, PlayerAbility>();
     
@@ -28,6 +30,17 @@ public class Player : MonoBehaviour
         }
         
         throw new Exception($"어빌리티{type.Name}을 {gameObject.name}에서 찾을 수 없습니다.");
+    }
+
+    private void Start()
+    {
+        _view = GetComponent<PhotonView>();
+        
+        if (_view.IsMine)
+        {
+            PlayerStatUI ui = GameObject.FindGameObjectWithTag("StatUI").GetComponent<PlayerStatUI>();
+            ui.Init(this);
+        }
     }
 
     private void Update()
