@@ -2,26 +2,21 @@ using System;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : PlayerAbility
 {
     // bool값
-    private bool _isSprinting = false;
-    private bool _isSlide = false;
-
-    private float _slideFriction = 30f;
-    private float _slideSpeed = 1.5f;
-    private Vector3 _slideDirection;
+    [SerializeField]private bool _isSprinting = false;
+    [SerializeField]private bool _isSlide = false;
     
-    public float MoveSpeed;
-    public float JumpForce;
-    public float SprintSpeed;
-    public float SlidePower;
+    private Vector3 _slideDirection;
+
     private float _gravity = -9.81f;
     private float _yVelocity = 0f;
     public CharacterController PlayerControl;
     private Animator _animator; 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         PlayerControl = GetComponent<CharacterController>();
         _animator = GetComponent<Animator>();
     }
@@ -52,7 +47,7 @@ public class PlayerController : MonoBehaviour
         _yVelocity += _gravity * Time.deltaTime;
         dir.y = _yVelocity;
         
-        PlayerControl.Move(dir * MoveSpeed * Time.deltaTime);
+        PlayerControl.Move(dir * _owner.Stat.MoveSpeed * Time.deltaTime);
         
         
     }
@@ -66,7 +61,7 @@ public class PlayerController : MonoBehaviour
         
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            _yVelocity = JumpForce;
+            _yVelocity = _owner.Stat.JumpForce;
             _animator.SetTrigger("Jump");
         }
     }
@@ -75,16 +70,17 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
-            _animator.SetBool("Sprint", !_isSprinting);
             _isSprinting = !_isSprinting;
-
+            
+            _animator.SetBool("Sprint", _isSprinting);
+            
             if (_isSprinting)
             {
-                MoveSpeed = SprintSpeed;
+                _owner.Stat.MoveSpeed = _owner.Stat.SprintSpeed;
             }
             else
             {
-                MoveSpeed = 10;
+                _owner.Stat.MoveSpeed = 10;
             }
         }
     }
@@ -99,7 +95,7 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.C) && ! _isSlide)
         {
             _isSlide = true;
-            _slideSpeed = SlidePower;
+            _owner.Stat.SlideSpeed = _owner.Stat.SlidePower;
 
             // 슬라이딩 방향 = 현재 바라보는 방향 기준
             _slideDirection = transform.forward;
@@ -117,6 +113,7 @@ public class PlayerController : MonoBehaviour
             
             _isSprinting = false;
             _isSlide = false;
+            _owner.Stat.MoveSpeed = 10;
         }
     }
 
@@ -132,24 +129,24 @@ public class PlayerController : MonoBehaviour
             _animator.SetTrigger("HandWave");
         }
     }
-
-
-
+    
 
     public void SlideMove()
     {
-        _slideSpeed -= _slideFriction * Time.deltaTime;
+        _owner.Stat.SlideSpeed -= _owner.Stat.SlideFriction * Time.deltaTime;
         
-        if (_slideSpeed <= 0f)
+        if (_owner.Stat.SlideSpeed <= 0f)
         {
-            _slideSpeed = 0f;
+            _owner.Stat.SlideSpeed = 0f;
             _isSlide = false;
             _animator.SetBool("Slide", false);
+            _animator.SetBool("Sprint", false);
             _isSprinting = false;
+            _owner.Stat.MoveSpeed = 10;
             return;
         }
 
-        Vector3 move = _slideDirection * _slideSpeed;
+        Vector3 move = _slideDirection * _owner.Stat.SlideSpeed;
         
         move.y = _yVelocity; // 중력 영향 포함
         _yVelocity += _gravity * Time.deltaTime;

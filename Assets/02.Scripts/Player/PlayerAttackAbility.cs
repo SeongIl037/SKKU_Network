@@ -1,15 +1,15 @@
 using UnityEngine;
 
-public class PlayerAttackAbility : MonoBehaviour
+public class PlayerAttackAbility : PlayerAbility
 {
     private PlayerController _player;
-    public float AttackCooltime;
     public float Timer;
     private bool _isAttacking;
     private Animator _animator;
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         _animator = GetComponent<Animator>();
         _player = GetComponent<PlayerController>();
     }
@@ -17,6 +17,7 @@ public class PlayerAttackAbility : MonoBehaviour
     private void Update()
     {
         Attack();
+        
     }
 
     public void Attack()
@@ -44,7 +45,7 @@ public class PlayerAttackAbility : MonoBehaviour
         }
         Timer += Time.deltaTime;
 
-        if (Timer >= AttackCooltime)
+        if (Timer >= (1f/ _owner.Stat.AttackSpeed))
         {
             _isAttacking = false;
             Timer = 0;

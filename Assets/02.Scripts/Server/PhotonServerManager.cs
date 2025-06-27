@@ -5,7 +5,7 @@ using UnityEngine;
 // PHOTON API
 using Photon.Pun;
 using Photon.Realtime;
-
+using Player = Photon.Realtime.Player;
 // 역할 : 포톤 서버 관리자 (서버 연결, 로비 입장, 방 입장, 게임 입장)
 public class PhotonServerManager : MonoBehaviourPunCallbacks // 포톤의 pun기능을 사용하기 위해 puncallbacks를 상속받아야한다.
 {
@@ -60,14 +60,18 @@ public class PhotonServerManager : MonoBehaviourPunCallbacks // 포톤의 pun기
         Debug.Log($"룸 입장 {PhotonNetwork.InRoom} : {PhotonNetwork.CurrentRoom.Name}");
         Debug.Log($"플레이어 : {PhotonNetwork.CurrentRoom.PlayerCount}명");
         
-        Dictionary<int, Player> roomPlayers = PhotonNetwork.CurrentRoom.Players;
-        foreach (KeyValuePair<int, Player> player in roomPlayers)
+        Dictionary<int, Photon.Realtime.Player> roomPlayers = PhotonNetwork.CurrentRoom.Players;
+        foreach (KeyValuePair<int, Photon.Realtime.Player> player in roomPlayers)
         {
             Debug.Log($"{player.Value.NickName} : {player.Value.ActorNumber}");   
             
             //진짜 고유 아이디
             Debug.Log(player.Value.UserId); //친구 기능, 귓속말 등등에 사용된다.
         }
+        // 방에 입장 완료가 되면 플레이어를 생성한다.
+        // 포톤에선 게임 오브젝트를 생성한 후 포톤 서버에 등록까지 해야한다.
+        
+        PhotonNetwork.Instantiate("Player", Vector3.zero, Quaternion.identity);
     }
     
     // 방 입장에 실패하면 호출되는 함수

@@ -1,14 +1,13 @@
 using System;
+using Unity.Cinemachine;
 using UnityEngine;
 
-public class PlayerRotateAbility : MonoBehaviour
+public class PlayerRotateAbility : PlayerAbility
 {
-    
     // 목표 : 마우스르 조작하면 카메라를 그 방햐응로 회전시키고 싶다.
     // 1. 입력 받기
     // 2. 회전 방향 결정하기
     public Transform CameraRoot;
-    public float RotationSpeed = 10;
     
     // 누적할 변수
     private float _mx;
@@ -17,6 +16,8 @@ public class PlayerRotateAbility : MonoBehaviour
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
+        CinemachineCamera camera = GameObject.FindWithTag("FollowCamera").GetComponent<CinemachineCamera>();
+        camera.Follow = CameraRoot.transform;
     }
 
     private void Update()
@@ -24,8 +25,8 @@ public class PlayerRotateAbility : MonoBehaviour
         float mouseX = Input.GetAxis("Mouse X");
         float mouseY = Input.GetAxis("Mouse Y");
         
-        _mx += mouseX * RotationSpeed * Time.deltaTime;
-        _my += mouseY * RotationSpeed * Time.deltaTime;
+        _mx += mouseX * _owner.Stat.RotationSpeed * Time.deltaTime;
+        _my += mouseY * _owner.Stat.RotationSpeed * Time.deltaTime;
         
         _my = Mathf.Clamp(_my, -90f, 90f);
         // 캐릭터
