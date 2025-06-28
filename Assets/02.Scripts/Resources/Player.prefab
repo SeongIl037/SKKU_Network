@@ -2672,6 +2672,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CameraRoot: {fileID: 4184716693811878212}
+  CameraTarget: {fileID: 3030842517621090010}
 --- !u!114 &7518619881453935669
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -8,6 +8,7 @@ public class PlayerRotateAbility : PlayerAbility
     // 1. 입력 받기
     // 2. 회전 방향 결정하기
     public Transform CameraRoot;
+    public Transform CameraTarget;
     
     // 누적할 변수
     private float _mx;
@@ -21,6 +22,8 @@ public class PlayerRotateAbility : PlayerAbility
         {
             CinemachineCamera camera = GameObject.FindWithTag("FollowCamera").GetComponent<CinemachineCamera>();
             camera.Follow = CameraRoot.transform;
+            MiniMapCamera miniMapCamera = GameObject.FindWithTag("MiniMap").GetComponent<MiniMapCamera>();
+            miniMapCamera.Target = CameraTarget.transform;
         }
     }
 
