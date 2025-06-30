@@ -6,8 +6,8 @@ public class PlayerAttackAbility : PlayerAbility
     private PlayerController _player;
     public float Timer;
     public bool IsAttacking;
-    private Animator _animator;
-
+    public Collider WeaponCollider;
+    
     protected override void Awake()
     {
         base.Awake();
@@ -19,10 +19,18 @@ public class PlayerAttackAbility : PlayerAbility
     // RPC : Remote Procdure Call
     //       ㄴ 물리적으로 떨어져 있는 다른 디바이스의 함수를 호출하는 기능
     //       ㄴ RPC 함수를 호출하면 네트워크를 통해 다른 사용자의 스크립트에서 해당 함수가 호출된다
-    
+    private void Start()
+    {
+        DeActiveCollider();
+    }
     
     private void Update()
     {
+        if (_owner.IsDead)
+        {
+            return;
+        }
+
         if (!_photonView.IsMine)
         {
             return;
@@ -53,6 +61,15 @@ public class PlayerAttackAbility : PlayerAbility
         }
     }
     
+    public void ActiveCollider()
+    {
+        WeaponCollider.enabled = true;
+    }
+
+    public void DeActiveCollider()
+    {
+        WeaponCollider.enabled = false;
+    }
     [PunRPC] // => RPC를 사용하기 위해서 함수 앞에 어트리뷰트를 적어줘야한다.
     private void PlayAttackAnimation(int random)
     {
@@ -71,5 +88,17 @@ public class PlayerAttackAbility : PlayerAbility
             IsAttacking = false;
             Timer = 0;
         }
+    }
+
+    public void Hit(Collider hit)
+    {
+        if (_photonView.IsMine == false)
+        {
+            return;
+        }
+        //RPC로 호출해야 다른 사람들ㅇ 게임 오브젝트들도 이 함수가 실행된다.
+        // damaged.Damaged(_owner.Stat.Damage);
+        PhotonView other = hit.GetComponent<PhotonView>();
+        other.RPC(nameof(Player.Damaged), RpcTarget.AllBuffered, _owner.Stat.Damage);
     }
 }

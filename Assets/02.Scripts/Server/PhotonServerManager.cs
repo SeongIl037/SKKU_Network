@@ -6,6 +6,8 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using Player = Photon.Realtime.Player;
+using Random = UnityEngine.Random;
+
 // 역할 : 포톤 서버 관리자 (서버 연결, 로비 입장, 방 입장, 게임 입장)
 public class PhotonServerManager : MonoBehaviourPunCallbacks // 포톤의 pun기능을 사용하기 위해 puncallbacks를 상속받아야한다.
 {
@@ -43,7 +45,7 @@ public class PhotonServerManager : MonoBehaviourPunCallbacks // 포톤의 pun기
     }
     // 포톤 마스터 서버에 접속하면 호출되는 함수
     public override void OnConnectedToMaster()
-    {
+    { 
         Debug.Log("마스터 서버 접속");
         Debug.Log($"InLobby : {PhotonNetwork.InLobby}");
         // 디폴트 로비 (채널) 입장
@@ -76,9 +78,8 @@ public class PhotonServerManager : MonoBehaviourPunCallbacks // 포톤의 pun기
         }
         // 방에 입장 완료가 되면 플레이어를 생성한다.
         // 포톤에선 게임 오브젝트를 생성한 후 포톤 서버에 등록까지 해야한다.
-        
-        PhotonNetwork.Instantiate("Player", Vector3.zero, Quaternion.identity);
-    }
+        PhotonNetwork.Instantiate("Player",SpawnPoints.Instance.GetSpawnPoint(), Quaternion.identity);
+         }
     
     // 방 입장에 실패하면 호출되는 함수
     public override void OnJoinRandomFailed(short returnCode, string message)

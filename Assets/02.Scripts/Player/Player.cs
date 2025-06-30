@@ -1,16 +1,19 @@
 using System;
 using System.Collections.Generic;
 using Photon.Pun;
+using Unity.Cinemachine;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IDamaged
 {
     private PhotonView _view;
     public PlayerStat Stat;
     public Dictionary<Type, PlayerAbility> _abilitiesCache = new Dictionary<Type, PlayerAbility>();
-    
+
+    public CinemachineImpulseSource Impulse;
+    public bool IsDead => Stat.Health <= 0;
     public event Action StaminaChanged;
-    
+    public event Action HealthChanged;
     public T GetAbility<T>() where T : PlayerAbility
     {
         var type = typeof(T);
@@ -57,7 +60,23 @@ public class Player : MonoBehaviour
         
         RecoveryStamina(Stat.StaminRecovery);
     }
-
+    
+    // 데미지 관련
+    [PunRPC]
+    public void Damaged(float damage)
+    {
+        Stat.Health = Mathf.Max(0, Stat.Health - damage);
+        HealthRefresh(Stat.Health);
+        Impulse.GenerateImpulse();
+        
+        Debug.Log($"남은 체력 {Stat.Health}");
+        if (IsDead)
+        {
+            GetAbility<PlayerDeadAbility>().DeadAnimation();
+        }
+    }
+    
+    // 스태미너 관련
     public bool ImmediateReduceStamina(float value)
     {
         if (CanMove(value) == false)
@@ -88,8 +107,14 @@ public class Player : MonoBehaviour
         StaminaChanged?.Invoke();
     }
 
+    public void HealthRefresh(float value)
+    {
+        Stat.Health = value;
+        HealthChanged?.Invoke();
+    }
     private bool CanMove(float value)
     {
        return Stat.Stamina >= value;
     }
+    
 }

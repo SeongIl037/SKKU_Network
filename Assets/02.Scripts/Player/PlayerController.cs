@@ -16,7 +16,6 @@ public class PlayerController : PlayerAbility, IPunObservable
     private float _gravity = -9.81f;
     private float _yVelocity = 0f;
     public CharacterController PlayerControl;
-    private Animator _animator; 
     protected override void Awake()
     {
         base.Awake();
@@ -43,6 +42,11 @@ public class PlayerController : PlayerAbility, IPunObservable
     }
     private void Update()
     {
+        if (_owner.IsDead)
+        {
+            return;
+        }
+        
         if (!_photonView.IsMine)
         {
             transform.position = Vector3.Lerp(transform.position, _receivedPosition, Time.deltaTime * 20f);
@@ -50,6 +54,7 @@ public class PlayerController : PlayerAbility, IPunObservable
             
             return;
         }
+        
         Movement();
         Jump();
         Sprint();

@@ -8,6 +8,7 @@ TagManager:
   - Bullet
   - StatUI
   - MiniMap
+  - Weapon
   layers:
   - Default
   - TransparentFX
