@@ -2633,7 +2633,7 @@ MonoBehaviour:
     AttackSpeed: 1.2
     JumpForce: 2.5
     SprintSpeed: 15
-    SlidePower: 20
+    SlidePower: 25
     RotationSpeed: 200
     SlideSpeed: 1.5
     SlideFriction: 30
@@ -2770,13 +2770,13 @@ MonoBehaviour:
     SynchronizeType: 1
     Name: Sprint
   - Type: 9
-    SynchronizeType: 1
+    SynchronizeType: 0
     Name: Attack1
   - Type: 9
-    SynchronizeType: 1
+    SynchronizeType: 0
     Name: Attack2
   - Type: 9
-    SynchronizeType: 1
+    SynchronizeType: 0
     Name: Attack3
   - Type: 9
     SynchronizeType: 1

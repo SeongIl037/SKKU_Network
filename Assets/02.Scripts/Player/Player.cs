@@ -81,15 +81,11 @@ public class Player : MonoBehaviour
         return true;
     }
     
-    public bool RecoveryStamina(float value)
+    public void RecoveryStamina(float value)
     {
-        if (CanMove(value) == false)
-        {
-            return false;
-        }
+
         Stat.Stamina += 1 / value * Time.deltaTime;
         StaminaChanged?.Invoke();
-        return true;
     }
 
     private bool CanMove(float value)

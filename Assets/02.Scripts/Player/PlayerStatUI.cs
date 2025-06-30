@@ -19,6 +19,5 @@ public class PlayerStatUI : MonoBehaviour
     private void Refresh()
     {
         StaminaSlider.value = MyPlayer.Stat.Stamina;
-        Debug.Log("UI 리프레시");
     }
 }

@@ -107,6 +107,11 @@ public class PlayerController : PlayerAbility, IPunObservable
             _owner.Stat.MoveSpeed = _owner.Stat.SprintSpeed;
             _animator.SetBool("Sprint", _isSprinting);
             _owner.SlowReduceStamina(_owner.Stat.RunStamina);
+
+            if (_owner.Stat.Stamina <= 0)
+            {
+                _isSprinting = false;
+            }
         }
         else
         {
@@ -176,42 +181,53 @@ public class PlayerController : PlayerAbility, IPunObservable
     {
         return _isSlide == false && _isSprinting == false && PlayerControl.isGrounded;
     }
-    
+
+
+    [PunRPC]
+    private void PlayEmotionAnimation(string emotion)
+    {
+        _animator.SetTrigger(emotion);
+    }
+
     private void Emotion()
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            _animator.SetTrigger("Angry");
+            _photonView.RPC(nameof(PlayEmotionAnimation), RpcTarget.All, "Angry");
         }
 
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            _animator.SetTrigger("HandWave");
+            _photonView.RPC(nameof(PlayEmotionAnimation), RpcTarget.All, "HandWave");
         }
 
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
-            _animator.SetTrigger("Question");
+
+            _photonView.RPC(nameof(PlayEmotionAnimation), RpcTarget.All, "Question");
         }
 
         if (Input.GetKeyDown(KeyCode.Alpha4))
         {
-            _animator.SetTrigger("Cheer");
+            
+            _photonView.RPC(nameof(PlayEmotionAnimation), RpcTarget.All, "Cheer");
         }
 
         if (Input.GetKeyDown(KeyCode.Alpha5))
         {
-            _animator.SetTrigger("Fear");
+            _photonView.RPC(nameof(PlayEmotionAnimation), RpcTarget.All, "Fear");        
         }
 
         if (Input.GetKeyDown(KeyCode.Alpha6))
         {
-            _animator.SetTrigger("HandClap");
+            
+            _photonView.RPC(nameof(PlayEmotionAnimation), RpcTarget.All, "HandClap");
         }
 
         if (Input.GetKeyDown(KeyCode.Alpha7))
         {
-            _animator.SetTrigger("HeadShake");
+
+            _photonView.RPC(nameof(PlayEmotionAnimation), RpcTarget.All, "HeadShake");
         }
     }
 }
