@@ -4,7 +4,7 @@ using UnityEngine;
 public class Waepon : MonoBehaviour
 {
     [SerializeField] private PlayerAttackAbility _attackAbility;
-
+    public GameObject Effect;
     private void Start()
     {
         _attackAbility = GetComponentInParent<PlayerAttackAbility>();
@@ -22,6 +22,7 @@ public class Waepon : MonoBehaviour
         if (other.GetComponent<IDamaged>() != null)
         { 
             _attackAbility.Hit(other);
+            Instantiate(Effect, transform.position, Quaternion.identity);
         } 
     }
 }

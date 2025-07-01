@@ -4,14 +4,24 @@ using Photon.Pun;
 using Unity.Cinemachine;
 using UnityEngine;
 
+public enum EPlayerState
+{
+    Live,
+    Dead
+    
+}
 public class Player : MonoBehaviour, IDamaged
 {
     private PhotonView _view;
     public PlayerStat Stat;
     public Dictionary<Type, PlayerAbility> _abilitiesCache = new Dictionary<Type, PlayerAbility>();
-
-    public CinemachineImpulseSource Impulse;
+    [SerializeField] private CinemachineImpulseSource _impulseSource;
+    
+    private EPlayerState _state;
+    public EPlayerState State => _state;
     public bool IsDead => Stat.Health <= 0;
+    
+    
     public event Action StaminaChanged;
     public event Action HealthChanged;
     public T GetAbility<T>() where T : PlayerAbility
@@ -38,7 +48,8 @@ public class Player : MonoBehaviour, IDamaged
     private void Start()
     {
         _view = GetComponent<PhotonView>();
-        
+        _impulseSource = GetComponent<CinemachineImpulseSource>();
+                    
         if (_view.IsMine)
         {
             PlayerStatUI ui = GameObject.FindGameObjectWithTag("StatUI").GetComponent<PlayerStatUI>();
@@ -63,16 +74,25 @@ public class Player : MonoBehaviour, IDamaged
     
     // 데미지 관련
     [PunRPC]
-    public void Damaged(float damage)
+    public void Damaged(float damage, int actorNumber)
     {
         Stat.Health = Mathf.Max(0, Stat.Health - damage);
         HealthRefresh(Stat.Health);
-        Impulse.GenerateImpulse();
-        
+        if (_view.IsMine)
+        { 
+            _impulseSource.GenerateImpulse();
+        }
         Debug.Log($"남은 체력 {Stat.Health}");
-        if (IsDead)
+        if(Stat.Health <= 0)
         {
+            _state = EPlayerState.Dead;
             GetAbility<PlayerDeadAbility>().DeadAnimation();
+            
+            RoomManager.Instance.OnPlayerDeath(_view.Owner.ActorNumber, actorNumber);
+        }
+        else
+        {
+            GetAbility<PlayerShakingAbility>().Shake();
         }
     }
     

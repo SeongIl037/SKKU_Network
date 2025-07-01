@@ -9,6 +9,7 @@ TagManager:
   - StatUI
   - MiniMap
   - Weapon
+  - DeadZone
   layers:
   - Default
   - TransparentFX

@@ -78,8 +78,7 @@ public class PhotonServerManager : MonoBehaviourPunCallbacks // 포톤의 pun기
         }
         // 방에 입장 완료가 되면 플레이어를 생성한다.
         // 포톤에선 게임 오브젝트를 생성한 후 포톤 서버에 등록까지 해야한다.
-        PhotonNetwork.Instantiate("Player",SpawnPoints.Instance.GetSpawnPoint(), Quaternion.identity);
-         }
+    }
     
     // 방 입장에 실패하면 호출되는 함수
     public override void OnJoinRandomFailed(short returnCode, string message)

@@ -37,7 +37,10 @@ public class PlayerDeadAbility : PlayerAbility
 
     private void RefreshSetting()
     {
-        this.gameObject.transform.position = SpawnPoints.Instance.GetSpawnPoint();
+        if (_photonView.IsMine)
+        {
+            this.gameObject.transform.position = SpawnPoints.Instance.GetSpawnPoint();
+        }
         _owner.Stat.Reset();
         _owner.HealthRefresh(_owner.Stat.Health);
     }
