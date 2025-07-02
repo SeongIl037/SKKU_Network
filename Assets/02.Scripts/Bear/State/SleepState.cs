@@ -3,14 +3,16 @@ using UnityEngine;
 
 public class SleepState : IState
 {
+    private BearController _controller;
     private Animator _animator;
     private StateMachine _stateMachine;
     private RangeDetector _rangeDetector;
-    public SleepState(Animator animator, StateMachine stateMachine, RangeDetector rangeDetector)
+    public SleepState(BearController controller)
     {
-        _animator = animator;
-        _stateMachine = stateMachine;
-        _rangeDetector = rangeDetector;
+        _controller = controller;
+        _animator = controller.Animator;
+        _stateMachine = controller.StateMachine;
+        _rangeDetector = controller.RangeDetector;
     }
 
     // setstate에서 자동으로 호출
@@ -18,6 +20,8 @@ public class SleepState : IState
     {
         // 시작 지점
         Debug.Log("sleep state 시작");
+        _animator.SetBool("Respawn", true);
+        _controller.ChangeDetectRadius(15f);
     }
 
     public void UpdateState()
@@ -26,13 +30,14 @@ public class SleepState : IState
 
         if (detect)
         { 
-            _stateMachine.SetState(new IdleState(_animator, _stateMachine));
+            _stateMachine.SetState(new IdleState(_controller));
         }
     }
 
     // setstate에서 자동으로 호출
     public void ExitState()
     {
-        
+        _animator.SetBool("Respawn", false);
+        _controller.ChangeDetectRadius(5f);
     }
 }

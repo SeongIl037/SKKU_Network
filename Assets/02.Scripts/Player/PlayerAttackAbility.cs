@@ -98,7 +98,16 @@ public class PlayerAttackAbility : PlayerAbility
         }
         //RPC로 호출해야 다른 사람들ㅇ 게임 오브젝트들도 이 함수가 실행된다.
         // damaged.Damaged(_owner.Stat.Damage);
-        PhotonView other = hit.GetComponent<PhotonView>();
-        other.RPC(nameof(Player.Damaged), RpcTarget.AllBuffered, _owner.Stat.Damage, _photonView.Owner.ActorNumber);
+
+        if (hit.gameObject.CompareTag("Player"))
+        {
+            PhotonView other = hit.GetComponent<PhotonView>();
+            other.RPC(nameof(Player.Damaged), RpcTarget.AllBuffered, _owner.Stat.Damage, _photonView.Owner.ActorNumber);   
+        }
+        else
+        {
+            PhotonView other = hit.GetComponent<PhotonView>();
+            other.RPC(nameof(BearController.Damaged), RpcTarget.All, _photonView.Owner.ActorNumber);
+        }
     }
 }

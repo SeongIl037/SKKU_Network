@@ -61,6 +61,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
     {
         
         PhotonNetwork.Instantiate("Player",SpawnPoints.Instance.GetSpawnPoint(), Quaternion.identity);
+        PhotonNetwork.Instantiate("Bear",SpawnPoints.Instance.GetBearSpanwPoint(), Quaternion.identity);
 
     }
 

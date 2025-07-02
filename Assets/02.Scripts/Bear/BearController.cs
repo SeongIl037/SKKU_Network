@@ -1,24 +1,62 @@
 using System;
+using System.Collections.Generic;
+using Photon.Pun;
 using RaycastPro.Detectors;
 using UnityEngine;
+using UnityEngine.AI;
 
-public class BearController : MonoBehaviour
+[RequireComponent(typeof(PhotonAnimatorView))]
+[RequireComponent(typeof(PhotonView))]
+public class BearController : MonoBehaviourPun, IDamaged
 {
-    [SerializeField]private StateMachine _stateMachine;
-    [SerializeField]private Animator _animator;
-    [SerializeField]private RangeDetector _rangeDetector;
+    public BearStat BearStat;
+    public NavMeshAgent Agent;
+    public StateMachine StateMachine;
+    public Animator Animator;
+    public RangeDetector RangeDetector;
+    public List<Transform> PatrolPoints;
+
+    private bool _isHit = false;
+
+    [PunRPC]
+    public void Damaged(float damage, int actorNumber)
+    {
+        Hit();
+        BearStat.Health -= damage;
+        Debug.Log($"{BearStat.Health}");
+    }
+    public void Hit()
+    {
+        _isHit = true;
+    }
     private void Start()
     {
-        _stateMachine = new StateMachine();
-        _animator = GetComponent<Animator>();
-        _rangeDetector = GetComponent<RangeDetector>();
+        StateMachine = new StateMachine();
+        Animator = GetComponent<Animator>();
+        RangeDetector = GetComponent<RangeDetector>();
+        Agent = GetComponent<NavMeshAgent>();
+        RangeDetector.Radius = 15f;
+
+        PatrolPoints = SpawnPoints.Instance.BearSpanwPoints;
         
-        IState sleep = new SleepState( _animator,_stateMachine, _rangeDetector);
-        _stateMachine.SetState(sleep);
+        IState sleep = new SleepState(this);
+        StateMachine.SetState(sleep);
     }
 
     private void Update()
     {
-        _stateMachine.Update();
+        if (_isHit)
+        {
+            _isHit = false;
+            StateMachine.SetState(new HitState(this));
+            
+        }
+        
+        StateMachine.Update();
+    }
+
+    public void ChangeDetectRadius(float radius)
+    {
+        RangeDetector.Radius = radius;
     }
 }
