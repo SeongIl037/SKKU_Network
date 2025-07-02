@@ -27,6 +27,7 @@ public class RunState : IState
     {
         // 시작 지점
         Debug.Log("Run state 시작");
+        _animator.SetBool("Run", true);
         _target = GameObject.FindGameObjectWithTag("Player");
     }
 
@@ -42,6 +43,6 @@ public class RunState : IState
     // setstate에서 자동으로 호출
     public void ExitState()
     {
-        
+        _animator.SetBool("Run", false);
     }
 }
