@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Photon.Pun;
 using Unity.Cinemachine;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public enum EPlayerState
 {
@@ -10,8 +11,10 @@ public enum EPlayerState
     Dead
     
 }
+[RequireComponent(typeof(PlayerController))]
 public class Player : MonoBehaviour, IDamaged
 {
+    public int Score = 0;
     private PhotonView _view;
     public PlayerStat Stat;
     public Dictionary<Type, PlayerAbility> _abilitiesCache = new Dictionary<Type, PlayerAbility>();
@@ -89,10 +92,45 @@ public class Player : MonoBehaviour, IDamaged
             GetAbility<PlayerDeadAbility>().DeadAnimation();
             
             RoomManager.Instance.OnPlayerDeath(_view.Owner.ActorNumber, actorNumber);
+            if (_view.IsMine)
+            {
+                MakeItem(Random.Range(1,4));
+            }
         }
         else
         {
             GetAbility<PlayerShakingAbility>().Shake();
+        }
+    }
+    
+    [PunRPC]
+    public void Heal(int value)
+    {
+        Stat.Health += value;
+        Stat.Health = Mathf.Clamp(Stat.Health, 0, Stat.MaxHealth);
+        HealthRefresh(Stat.Health);
+    }
+    private void MakeItem(int count)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            int index = Random.Range(0, 10);
+            
+            if (index >= 8)
+            {
+                ItemObjectFactory.Instance.RequestCreate(EItemType.Health, transform.position + new Vector3(0, 2f, 0));
+            }
+            else if (index >= 6)
+            {
+                ItemObjectFactory.Instance.RequestCreate(EItemType.Stamina, transform.position + new Vector3(0, 2f, 0));
+            }
+            else
+            {
+                ItemObjectFactory.Instance.RequestCreate(EItemType.Score, transform.position + new Vector3(0, 2f, 0));
+            }
+            // player : 플레이어가 생겅하고, 플레이어    가 나가면 이 플레이어가 만든 오브젝트들은 모두 삭제된다.(PhotonNetwork.Instantiate/Destroy)
+            // room : 룸이 생성하고, 룸이 없어지면 오브젝트들을 삭제한다. (PhotonNetwork.InstantiateRoomObject / Destroy)
+            // ㄴ 룸이 생성한다. = 방장만 생성할 수 있다. 
         }
     }
     
@@ -127,8 +165,21 @@ public class Player : MonoBehaviour, IDamaged
         StaminaChanged?.Invoke();
     }
 
+    public void StaminaRefresh(float value)
+    {
+        Stat.Stamina += value;
+        if (Stat.Stamina >= Stat.MaxStamina)
+        {
+            Stat.Stamina = Stat.MaxStamina;
+        }
+        StaminaChanged?.Invoke();
+    }
     public void HealthRefresh(float value)
     {
+        if (Stat.Stamina >= Stat.MaxStamina)
+        {
+            Stat.Stamina = Stat.MaxStamina;
+        }
         Stat.Health = value;
         HealthChanged?.Invoke();
     }

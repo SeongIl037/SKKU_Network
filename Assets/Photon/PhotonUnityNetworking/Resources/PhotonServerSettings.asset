@@ -43,6 +43,10 @@ MonoBehaviour:
   - PlayEmotionAnimation
   - Damaged
   - PlayTriggerAnimation
+  - Create
+  - Delete
+  - AcquireItem
+  - Heal
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
