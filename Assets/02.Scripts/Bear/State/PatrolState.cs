@@ -1,15 +1,18 @@
 using UnityEngine;
 
-public class PatrolState : MonoBehaviour
+public class PatrolState : IState
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public void EnterState()
     {
         
     }
 
-    // Update is called once per frame
-    void Update()
+    public void UpdateState()
+    {
+        
+    }
+
+    public void ExitState()
     {
         
     }

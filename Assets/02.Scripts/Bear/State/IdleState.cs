@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class IdleState : MonoBehaviour , IState
+public class IdleState :  IState
 {
     private readonly Animator _animator;
     private readonly StateMachine _stateMachine;
@@ -10,7 +10,11 @@ public class IdleState : MonoBehaviour , IState
     // idle 상태에서 몇초가 지나면 patrol 상태로 변한다.
     // 또는 idle상태에서 캐릭터가 곰 주변으로 다가온다면 Run상태로 변한다.
     // idle 상태에서는 가만히 있는다.
-    
+    public IdleState(Animator animator, StateMachine stateMachine)
+    {
+        _animator = animator;
+        _stateMachine = stateMachine;
+    }
     
     public void EnterState()
     {
@@ -21,9 +25,13 @@ public class IdleState : MonoBehaviour , IState
     public void UpdateState()
     {
         _timer += Time.deltaTime;
-        
+        if (_timer >= IdleTime)
+        {
+            _stateMachine.SetState(new PatrolState());
+        }
     }
 
+    // set에서 자동 호출
     public void ExitState()
     {
         _timer = 0;
