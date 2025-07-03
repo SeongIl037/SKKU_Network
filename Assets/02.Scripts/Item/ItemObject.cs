@@ -22,15 +22,17 @@ public class ItemObject : MonoBehaviourPun
         if(other.CompareTag("Player"))
         {
             Player player = other.GetComponent<Player>();
-            PhotonView otherView = other.GetComponent<PhotonView>();
-            Debug.Log($"{player.name} entered");
-            Debug.Log($"먹기 전 헬스 {player.Stat.Health}");
+            if (player.GetComponent<PhotonView>().IsMine == false)
+            {
+                return;
+            }
             
-            Debug.Log($"먹기 전 스태미너 {player.Stat.Stamina}");
+            PhotonView otherView = other.GetComponent<PhotonView>();
+            
             switch (ItemType)
             {
                 case EItemType.Score:
-                    player.Score += 10;
+                    ScoreManager.Instance.AddScore(100);
                     break;
                 case EItemType.Health:
                     otherView.RPC(nameof(Player.Heal), RpcTarget.All, 10);
@@ -40,8 +42,6 @@ public class ItemObject : MonoBehaviourPun
                     break;
             }
             
-            Debug.Log($"먹은 후 헬스 {player.Stat.Health}");
-            Debug.Log($"먹은 후 스태미너 {player.Stat.Stamina}");
             ItemObjectFactory.Instance.RequestDelete(photonView.ViewID);
         }
     } 

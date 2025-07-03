@@ -20,7 +20,6 @@ public class IdleState :  IState
     
     public void EnterState()
     {
-        Debug.Log(_controller);
         _animator.SetBool("Idle", true);
         Debug.Log("Idle EnterState");
         

@@ -1559,6 +1559,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1353c548a350d8645901e318a7a6510b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  BearStat:
+    WalkSpeed: 5
+    RunSpeed: 15
+    Health: 200
+    MaxHealth: 200
+    Damage: 50
   Agent: {fileID: 1371311971543941522}
   Animator: {fileID: 0}
   RangeDetector: {fileID: 0}

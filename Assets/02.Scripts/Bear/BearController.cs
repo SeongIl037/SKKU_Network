@@ -17,7 +17,8 @@ public class BearController : MonoBehaviourPun, IDamaged
     public List<Transform> PatrolPoints;
 
     private bool _isHit = false;
-
+    
+    private bool _attackEnd = false;
     [PunRPC]
     public void Damaged(float damage, int actorNumber)
     {
@@ -58,5 +59,13 @@ public class BearController : MonoBehaviourPun, IDamaged
     public void ChangeDetectRadius(float radius)
     {
         RangeDetector.Radius = radius;
+    }
+    
+    public void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Weapon"))
+        {
+            StateMachine.SetState(new HitState(this));
+        }
     }
 }
