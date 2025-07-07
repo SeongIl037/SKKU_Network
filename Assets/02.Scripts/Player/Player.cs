@@ -14,7 +14,11 @@ public enum EPlayerState
 [RequireComponent(typeof(PlayerController))]
 public class Player : MonoBehaviour, IDamaged
 {
+    [Header("플레이어 정보")]
     public int Score = 0;
+    public int KillCount = 0;
+    
+    [Header("컴포넌트")]
     private PhotonView _view;
     public PlayerStat Stat;
     public Dictionary<Type, PlayerAbility> _abilitiesCache = new Dictionary<Type, PlayerAbility>();
@@ -92,8 +96,14 @@ public class Player : MonoBehaviour, IDamaged
             GetAbility<PlayerDeadAbility>().DeadAnimation();
             
             RoomManager.Instance.OnPlayerDeath(_view.Owner.ActorNumber, actorNumber);
+            // ScoreManager.Instance.AddKillScore(10000);
+           
+            
             if (_view.IsMine)
             {
+                var a = PhotonNetwork.CurrentRoom.GetPlayer(actorNumber);
+                _view.RPC(nameof(Player.RequestAddKillCount), a);
+                ScoreManager.Instance.ReduceScore();
                 MakeItem(Random.Range(1,4));
             }
         }
@@ -134,6 +144,11 @@ public class Player : MonoBehaviour, IDamaged
         }
     }
     
+    [PunRPC]
+    public void RequestAddKillCount()
+    {
+        ScoreManager.Instance.AddKillCount();
+    }
     // 스태미너 관련
     public bool ImmediateReduceStamina(float value)
     {

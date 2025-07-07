@@ -24,10 +24,29 @@ public class RoomManager : MonoBehaviourPunCallbacks
             Destroy(this.gameObject);
         }
     }
-
-    // 방에 입장하면 자동으로 호출되는 함수 
-    public override void OnJoinedRoom()// -> 이벤트 함수는 함수명이 기능이 아니라 상황을 말한다.
+    [SerializeField] private bool _initialized = false;
+    public override void OnJoinedRoom()
     {
+        Init();
+    }
+
+    private void Start()
+    {
+        if (PhotonNetwork.InRoom)
+        {
+            Init();    
+        }
+    }
+    // 방에 입장하면 자동으로 호출되는 함수 
+    public void Init()// -> 이벤트 함수는 함수명이 기능이 아니라 상황을 말한다.
+    {
+        if (_initialized)
+        {
+            return;
+        }
+
+        _initialized = true;
+        
         // 플레이어 생성
         GeneratePlayer();
         SetRoom();
@@ -59,10 +78,9 @@ public class RoomManager : MonoBehaviourPunCallbacks
     }
     private void GeneratePlayer()
     {
-        
-        PhotonNetwork.Instantiate("Player",SpawnPoints.Instance.GetSpawnPoint(), Quaternion.identity);
-        PhotonNetwork.Instantiate("Bear",SpawnPoints.Instance.GetBearSpanwPoint(), Quaternion.identity);
-
+        Vector3 randomPosition = SpawnPoints.Instance.GetSpawnPoint();
+        ECharacterType myCharacter = PhotonServerManager.Instance._selectedCharacterType;
+        PhotonNetwork.Instantiate(myCharacter.ToString(), randomPosition , Quaternion.identity);
     }
 
     private void SetRoom()

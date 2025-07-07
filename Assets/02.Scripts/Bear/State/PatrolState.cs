@@ -35,12 +35,9 @@ public class PatrolState : IState
         _animator.SetBool("Patrol",true);
         _controller.Agent.speed = _controller.BearStat.WalkSpeed;
         
-        Debug.Log($"{_controller.Agent.speed}");
-        
         int index = Random.Range(0, _points.Count);
         _position = _points[index].position;
 
-        Debug.Log($"{_position}");
     }
 
     public void UpdateState()

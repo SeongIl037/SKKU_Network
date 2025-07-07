@@ -33,6 +33,7 @@ public class PlayerStat
     [Header("리스폰")]
     public float RespawnTime = 5f;
 
+    
     public void Reset()
     {
         Stamina = MaxStamina;

@@ -12,9 +12,24 @@ using Random = UnityEngine.Random;
 public class PhotonServerManager : MonoBehaviourPunCallbacks // 포톤의 pun기능을 사용하기 위해 puncallbacks를 상속받아야한다.
 {
     private readonly string _gameVersion = "1.0.0";
-
-    private string _nickname = "S30NG";
     // MonoBehaviourPunCallbacks : 유니티 이벤트 말고도 pun 섭저 이벤트를 받을 수 있다.
+    
+    public static PhotonServerManager Instance;
+    public ECharacterType _selectedCharacterType;
+    public LobbyScene LobbyScene;
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(this.gameObject);
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
+    }
+    
     private void Start()
     {
         // 설정
@@ -27,7 +42,6 @@ public class PhotonServerManager : MonoBehaviourPunCallbacks // 포톤의 pun기
         // 1. 버전  = 버전이 다르면 다른 서버로 접속이 된다. 
         PhotonNetwork.GameVersion = _gameVersion;
         // 2. 닉네임 = 게임에ㅓㅅ 사용할 사용자의 별명 (중복 가능) = 판별을 위해서는 ActorID를 사용한다.
-        PhotonNetwork.NickName = _nickname;
         
         //방장이 로드한 씬으로 다른 참여자가 똑같이 이동하게끔 동기화 해주는 옵션
         // 방장 :방을 만든 소유자이자 " 마스터 클라이언트 (방마다 한명의 마스터 클라이언트가 존재)"
@@ -48,8 +62,10 @@ public class PhotonServerManager : MonoBehaviourPunCallbacks // 포톤의 pun기
     { 
         Debug.Log("마스터 서버 접속");
         Debug.Log($"InLobby : {PhotonNetwork.InLobby}");
+        
         // 디폴트 로비 (채널) 입장
-        PhotonNetwork.JoinLobby(TypedLobby.Default); // == PhotonNetwork.JoinLobby()
+        PhotonNetwork.JoinLobby();
+        // PhotonNetwork.JoinLobby(TypedLobby.Default); // == PhotonNetwork.JoinLobby()
     }
 
     // 로비에 접속하면 호출되는 함수
@@ -57,9 +73,9 @@ public class PhotonServerManager : MonoBehaviourPunCallbacks // 포톤의 pun기
     {
         Debug.Log("로비 (채널) 입장 완료");
         Debug.Log($"InLobby : {PhotonNetwork.InLobby}");
-        
+        return;
         // 랜덤 방에 들어간다.
-        PhotonNetwork.JoinRandomRoom();
+        // PhotonNetwork.JoinRandomRoom();
     }
     
     // 방에 입장한 후 호출되는 함수
@@ -67,16 +83,20 @@ public class PhotonServerManager : MonoBehaviourPunCallbacks // 포톤의 pun기
     {
         Debug.Log($"룸 입장 {PhotonNetwork.InRoom} : {PhotonNetwork.CurrentRoom.Name}");
         Debug.Log($"플레이어 : {PhotonNetwork.CurrentRoom.PlayerCount}명");
-        
-        Dictionary<int, Photon.Realtime.Player> roomPlayers = PhotonNetwork.CurrentRoom.Players;
-        foreach (KeyValuePair<int, Photon.Realtime.Player> player in roomPlayers)
+        _selectedCharacterType = LobbyScene.CharacterType;
+        if (PhotonNetwork.IsMasterClient)
         {
-            Debug.Log($"{player.Value.NickName} : {player.Value.ActorNumber}");   
-            
-            //진짜 고유 아이디
-            Debug.Log(player.Value.UserId); //친구 기능, 귓속말 등등에 사용된다.
+            PhotonNetwork.LoadLevel("Battle");
         }
-        // 방에 입장 완료가 되면 플레이어를 생성한다.
+        // Dictionary<int, Photon.Realtime.Player> roomPlayers = PhotonNetwork.CurrentRoom.Players;
+        // foreach (KeyValuePair<int, Photon.Realtime.Player> player in roomPlayers)
+        // {
+        //     Debug.Log($"{player.Value.NickName} : {player.Value.ActorNumber}");   
+        //     
+        //     //진짜 고유 아이디
+        //     Debug.Log(player.Value.UserId); //친구 기능, 귓속말 등등에 사용된다.
+        // }
+        // // 방에 입장 완료가 되면 플레이어를 생성한다.
         // 포톤에선 게임 오브젝트를 생성한 후 포톤 서버에 등록까지 해야한다.
     }
     
@@ -85,6 +105,7 @@ public class PhotonServerManager : MonoBehaviourPunCallbacks // 포톤의 pun기
     {
         Debug.Log($"랜덤 방 입장에 실패했습니다 : {returnCode} : {message}");
         
+        return;
         //room 속성 정의
         RoomOptions roomOptions = new RoomOptions();
         roomOptions.MaxPlayers = 20;

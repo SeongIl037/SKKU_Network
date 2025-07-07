@@ -1,11 +1,12 @@
-using System;
+using Photon.Pun;
 using UnityEngine;
 
-public class Waepon : MonoBehaviour
+public class Waepon : MonoBehaviour,IPunObservable
 {
     [SerializeField] private PlayerAttackAbility _attackAbility;
     public GameObject Effect;
 
+    private Vector3 _receiveTransform;
     private float _ratio = 0.1f;
     private int _num = 10000;
     private void Start()
@@ -13,12 +14,18 @@ public class Waepon : MonoBehaviour
         _attackAbility = GetComponentInParent<PlayerAttackAbility>();
         ScoreManager.Instance.OnScoreChanged += RefreshWeaponSize;
     }
-
-    private void Update()
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        
+        if (stream.IsWriting)
+        {
+            stream.SendNext(transform.localScale);
+        }
+        else if (stream.IsReading)
+        {
+            _receiveTransform = (Vector3)stream.ReceiveNext();
+            transform.localScale = _receiveTransform;
+        }
     }
-
     private void RefreshWeaponSize()
     {
         int score = ScoreManager.Instance.Score;

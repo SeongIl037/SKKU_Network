@@ -32,7 +32,7 @@ public class ItemObject : MonoBehaviourPun
             switch (ItemType)
             {
                 case EItemType.Score:
-                    ScoreManager.Instance.AddScore(100);
+                    ScoreManager.Instance.AddScore(1000);
                     break;
                 case EItemType.Health:
                     otherView.RPC(nameof(Player.Heal), RpcTarget.All, 10);

@@ -103,6 +103,7 @@ public class PlayerAttackAbility : PlayerAbility
         {
             PhotonView other = hit.GetComponent<PhotonView>();
             other.RPC(nameof(Player.Damaged), RpcTarget.AllBuffered, _owner.Stat.Damage, _photonView.Owner.ActorNumber);
+            
         }
         else
         {
